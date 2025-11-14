@@ -81,19 +81,13 @@ cat("\nTotal customers:", nrow(query4_result), "\n")
 cat("\n========== QUERY 5 ==========\n")
 cat("Payment details with staff information:\n\n")
 
-query5_result <- payment_dt[staff_dt, on = .(staff_id),
-                            .(payment_id = i.payment_id,
-                              amount = i.amount,
-                              payment_date = i.payment_date,
-                              staff_name = paste(first_name, last_name))]
+# Using merge for data.table join
+query5_result <- merge(payment_dt, staff_dt, by = "staff_id")
+query5_result <- query5_result[, .(payment_id, amount, payment_date, 
+                                    staff_name = paste(first_name, last_name))]
 
-# Alternative using merge
-query5_result_alt <- merge(payment_dt, staff_dt, by = "staff_id")
-query5_result_alt <- query5_result_alt[, .(payment_id, amount, payment_date, 
-                                            staff_name = paste(first_name, last_name))]
-
-print(head(query5_result_alt, 20))
-cat("\nTotal payments:", nrow(query5_result_alt), "\n")
+print(head(query5_result, 20))
+cat("\nTotal payments:", nrow(query5_result), "\n")
 
 # ============================================================================
 # QUERY 6: Find films that are not rented
@@ -109,7 +103,7 @@ rented_films <- unique(inventory_dt[inventory_id %in% rented_inventory, film_id]
 query6_result <- film_dt[!film_id %in% rented_films, .(film_id, title)]
 
 print(query6_result)
-cat("\nTotal unreturned films:", nrow(query6_result), "\n")
+cat("\nTotal films not rented:", nrow(query6_result), "\n")
 
 # ============================================================================
 # QUERY 7: Plot - Average Rental Rate by Film Rating
