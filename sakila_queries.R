@@ -1,7 +1,3 @@
-# Sakila Database Queries using data.table
-# Author: [Your Name]
-# Date: 2025-11-14
-
 # Load required libraries
 library(RSQLite)
 library(data.table)
